@@ -1,0 +1,51 @@
+{
+  "name": "robust-logs",
+  "version": "1.0.0",
+  "description": "Robust logs is a system logging library designed to aide debugging and increase code readability.",
+  "main": "lib/index.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "make test",
+    "init": "rm -rf node_modules && npm i"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robustly/robust-logs.git"
+  },
+  "keywords": [
+    "logging",
+    "log",
+    "logs",
+    "multiple",
+    "streams",
+    "events",
+    "tiny",
+    "fast",
+    "small",
+    "simple"
+  ],
+  "author": "Robustly.io Inc. <developers@robustly.io>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/robustly/robust-logs/issues"
+  },
+  "homepage": "https://github.com/robustly/robust-logs#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "chai-subset": "^1.4.0",
+    "intercept-stdout": "^0.1.2",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.7",
+    "sinon-as-promised": "^4.0.2",
+    "sinon-chai": "^2.8.0"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.7",
+    "bunyan": "^1.8.5",
+    "lodash": "^4.17.4"
+  }
+}
