@@ -4,7 +4,7 @@ Robust logs is a simple and fast logging module for browser/node.js services.
 
 It uses [bunyan](https://github.com/trentm/node-bunyan)'s data format so it is compatible with
 bunyan CLI tool ![bunyan CLI screenshot](https://raw.github.com/trentm/node-bunyan/master/tools/screenshot1.png)
-But it has an improved logging API and more advanced features.
+It has an improved logging API and more advanced features.
 
 ## Table of Contents
 
@@ -43,40 +43,86 @@ Robust logs is not ready for production use.  It is still experimental.
 
 .env
 ---
-   LOG_LEVEL="INFO"
-   LOG_FILTERS="APP"
-   NODE_APP="Test App"
-   NODE_ENV="test"
+
+    LOG_LEVEL="INFO"  TODO: check this is implemented...
+    LOG_FILTERS="APP"
+    NODE_APP="Test App"
+    NODE_ENV="test"
 
 
 main.js
 ---
-    process.env["LOG_LEVEL"] = "INFO"  // DEFAULT
-    process.env["LOG_FILTERS"] = "APP"  // DEFAULT.  "ALL" | "MODULE_NAME"
-    process.env["NODE_APP"] = "app_name"
-    process.env["NODE_ENV"] = "env"
+    // load environment variables
+    // Ex. via dotenv
+    require('dotenv').load();
 
     // logging from the main executable
     var log = require('robust-log')()
 
     // logging from a module:
-    var log = require('robust-log')("Module_Name") // "Module_Name can be filtered via LOG_FILTERS"
+    var log = require('robust-log')("Module_Name")
 
+### Default Config
+
+    {
+      ringBufferSize: 100,
+      component: 'Module_Name',
+      app: 'app_name', // DEFAULTS TO: env.NODE_APP
+      env: 'env' // DEFAULTS TO: env.NODE_ENV
+    }
+
+## Usage
+
+**If you are writing a component, be sure to set config.component = "component_name".  This tells
+the logging system that this is a dependency component which should only be logged to error dumps.**
+
+    log = require('robust-log')('component_name')
+    // OR
+    log = require('robust-log')({component: 'component_name'})
 
 ## API
 
-### Log an event
+### Logging an event
 
-* Each log
-log(eventLabelStr, [detailsObj]) // Defaults to INFO_LEVEL
+#### log(eventLabelStr, [detailsObj], [opts])
 
-log.info(eventLabelStr, [detailsObj])
-log.error(errorLabelStr, errObj)  // only used when there is an unrecovered error.
+  - Logs an event as level: INFO
+  - Returns: Promise
+  - INFO will always be written to stdout unless filtered out by LOG_FILTERS
+
+##### Example
+
+    log('something happened', {id:1})
+
+#### log.info(eventLabelStr, [detailsObj])
+
+  - Logs an event as level: INFO
+  - Returns: Promise
+
+##### Example
+
+      log.info('something happened', {id:1})
+
+// TODO: finish these sections...
+
 log.warn(eventLabelStr, [detailsObj])
-log.trace(eventLabelStr, [detailsObj])
-log.fatal(eventLabelStr, [detailsObj])  // reserved for only the most grievious of circumstances
+  - warnings are pretty printed in bold
+  - in the future, warning events can trigger alerts
 
-Returns: Promise
+log.trace(eventLabelStr, [detailsObj])
+  - trace events are only written to the log stream if process.env.DEBUG is truthy.
+  - trace events are also written to the log stream if an error occurs.
+
+log.error(errorLabelStr, errObj)  // only used when there is an unrecovered error.
+  - if an error is logged, it will also flush the ringbuffer containing all logs from all modules.
+  - flushes to stderr as well as stdout
+
+
+log.fatal(eventLabelStr, [detailsObj])  // reserved for only the most grievious of circumstances
+  - fatal errors are styled uniquely
+  - in the future, fatal events can trigger alerts
+
+- All event logging returns a Promise
 
 ### Goal tracking
 
@@ -109,7 +155,13 @@ log.removeEventHandler(eventLabelStr)
 #### Example
 
     var log = require('robust-log')()
+
     function sayHi(eventLabelStr, details) { console.log('Hello Passenger!') }
     var registrationObj = log.addEventHandler("passenger arrived.", sayHi, "taxi") // replace taxi with *
-    require('robust-log')('taxi')('passenger arrived.')
+
+    log = require('robust-log')('taxi')
+    // trigger the event handler
+    log('passenger arrived.')
+
+    // cleanup
     log.removeEventHandler(registrationObj)
