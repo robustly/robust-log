@@ -43,33 +43,33 @@ Robust logs is not ready for production use.  It is still experimental.
 
 .env
 ---
-   LOG_LEVEL="INFO"
-   LOG_FILTERS="APP"
-   NODE_APP="Test App"
-   NODE_ENV="test"
+
+    LOG_LEVEL="INFO"  TODO: check this is implemented...
+    LOG_FILTERS="APP"
+    NODE_APP="Test App"
+    NODE_ENV="test"
 
 
 main.js
 ---
-    process.env["LOG_LEVEL"] = "INFO"  // DEFAULT
-    process.env["LOG_FILTERS"] = "APP"  // DEFAULT.  "ALL" | "MODULE_NAME"
-    process.env["NODE_APP"] = "app_name"
-    process.env["NODE_ENV"] = "env"
+    // load environment variables
+    // Ex. via dotenv
+    require('dotenv').load();
 
     // logging from the main executable
     var log = require('robust-log')()
 
     // logging from a module:
-    var log = require('robust-log')("Module_Name") // "Module_Name can be filtered via LOG_FILTERS"
+    var log = require('robust-log')("Module_Name")
 
-### Config
+### Default Config
 
-{
-  ringBufferSize: 100,  // DEFAULT.
-  component: 'if this is a module or library of an application.',
-  app: 'app_name', // DEFAULT: env.NODE_APP
-  env: 'env' // DEFAULT: env.NODE_ENV
-}
+    {
+      ringBufferSize: 100,
+      component: 'Module_Name',
+      app: 'app_name', // DEFAULTS TO: env.NODE_APP
+      env: 'env' // DEFAULTS TO: env.NODE_ENV
+    }
 
 ## Usage
 
@@ -82,14 +82,28 @@ the logging system that this is a dependency component which should only be logg
 
 ## API
 
-### Log an event
+### Logging an event
 
-log(eventLabelStr, [detailsObj]) // Defaults to INFO_LEVEL
-  - INFO_LEVEl log events.  
+#### log(eventLabelStr, [detailsObj], [opts])
+
+  - Logs an event as level: INFO
+  - Returns: Promise
   - INFO will always be written to stdout unless filtered out by LOG_FILTERS
 
-log.info(eventLabelStr, [detailsObj])
-  - exactly the same as "log"
+##### Example
+
+    log('something happened', {id:1})
+
+#### log.info(eventLabelStr, [detailsObj])
+
+  - Logs an event as level: INFO
+  - Returns: Promise
+
+##### Example
+
+      log.info('something happened', {id:1})
+
+// TODO: finish these sections...
 
 log.warn(eventLabelStr, [detailsObj])
   - warnings are pretty printed in bold
