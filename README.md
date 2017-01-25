@@ -3,8 +3,9 @@
 Robust logs is a simple and fast logging module for browser/node.js services.
 
 It uses [bunyan](https://github.com/trentm/node-bunyan)'s data format so it is compatible with
-bunyan CLI tool ![bunyan CLI screenshot](https://raw.github.com/trentm/node-bunyan/master/tools/screenshot1.png)
-It has an improved logging API and more advanced features.
+bunyan log viewer. ![bunyan CLI screenshot](https://raw.github.com/trentm/node-bunyan/master/tools/screenshot1.png)
+
+It has an improved logging API and more advanced features than other loggers.
 
 ## Table of Contents
 
