@@ -69,7 +69,6 @@ Robust logs is not ready for production use.  It is still experimental.
 
     {
       ringBufferSize: 100,
-      component: 'Module_Name',
       app: 'app_name', // DEFAULTS TO: env.NODE_APP
       env: 'env' // DEFAULTS TO: env.NODE_ENV
     }
