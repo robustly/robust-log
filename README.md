@@ -30,40 +30,42 @@ Robust logs is not ready for production use.  It is still experimental.
 
 `npm i robust-logs`
 
+*Optional*
+
+`npm i -g bunyan` -- command line log viewer
+
 ## Features
 
-- Elegant logging API.  Example: log('message', details)
+- Standard interface for logging management.  
 - Extensible via stream plugins
 - Ringbuffer support for additional details when exceptions occur.
 - Supports multiple runtime environments: browser, node.js
 - Tracks success rates and performance history. (via goal tracking.)
-- Supports multiple report formats (tabular, JSON, etc...)
-- Optional global application event log and dispatcher (register event handlers, trigger events)
+- Supports multiple report formats (JSON, CSV, etc...)
+- Supports large scale deployments
 
-## Setup
-
-.env
----
-
-    LOG_LEVEL="INFO"  TODO: check this is implemented...
-    LOG_FILTERS="APP"
-    NODE_APP="Test App"
-    NODE_ENV="test"
+## Usage Examples
 
 
-main.js
----
-    // load environment variables
-    // Ex. via dotenv
-    require('dotenv').load();
+``` javascript
+  // logging from the main executable
+  var log = require('robust-log')('Test App')
 
-    // logging from the main executable
-    var log = require('robust-log')()
+  log('Hello, welcome to the logging example.')
 
-    // logging from a module:
-    var log = require('robust-log')("Module_Name")
+  log('I saw your future and here is what I learned:',
+    {deathDate: '09/13/2019', painScore: 98, cause: 'car accident'})
 
-### Default Config
+  log.warn('I just detected that the internal temperature is rising!')
+
+  // log.error('An unexpected error just occurred.', new Error('Module Overheated.'))
+
+```
+
+![Console Output](assets/usage-example-1.png)
+
+
+### Default Configuration
 
     {
       ringBufferSize: 100,
@@ -72,14 +74,14 @@ main.js
       env: 'env' // DEFAULTS TO: env.NODE_ENV
     }
 
-## Usage
+## Supported Environment Variables
 
-**If you are writing a component, be sure to set config.component = "component_name".  This tells
-the logging system that this is a dependency component which should only be logged to error dumps.**
-
-    log = require('robust-log')('component_name')
-    // OR
-    log = require('robust-log')({component: 'component_name'})
+.env
+---
+    LOG_LEVEL="INFO"  TODO: check this is implemented...
+    LOG_FILTERS="APP"
+    NODE_APP="Test App"
+    NODE_ENV="test"
 
 ## API
 
@@ -125,23 +127,43 @@ log.fatal(eventLabelStr, [detailsObj])  // reserved for only the most grievious 
 
 - All event logging returns a Promise
 
-### Goal tracking
+### Create a goal
 
-#### Create a goal
+Goal tracking is useful to track performance and success rates for end-to-end services
+and internal workflows when debugging.  If you are new to logging goals, it is recommended
+that you add goal tracking to your public APIs.  
 
-log.goal(goalLabelStr, contextObj, opts)
+#### log.goal(goalLabelStr, contextObj, opts):log
 
-  - logs that the goal has begun
-  - creates a new log instance whose context is set to the goal.
-  - creates a new goal with a unique id and start timestamp
+  - logs goal started event with a unique id and start timestamp
+  - Returns: new instance of log with context set to the new goal
 
-goal.fail - function<Promise>
-goal.pass - function<Promise>
+#### goal.fail([ErrorObj]) : function<Promise>
 
-Example
----
-    var goal = log.goal(goalLabel, contextObj, opts)
-    work().then(goal.pass).catch(goal.fail)
+  - logs that a goal has failed and logs the error as a reason.
+  - Returns: resolved Promise
+
+#### goal.succeed([ResolvedValue]) : function<Promise>
+
+  - logs that a goal has succeeded
+
+##### Example
+
+``` javascript
+  function getItem(req, res) {
+    // create a goal instance and a goal log.
+    var goal = log.goal('API_getItem', {req:req})
+
+    get(req).
+      .then(item=> {
+        res.status(200).send(item)
+        // note that the goal was a success
+        return goal.succeed(item)
+      })
+      // if the goal fails, both the failure and the cause will be recorded in the logs.
+      .catch(goal.fail)
+  }
+```
 
 ### Event Handling
 
