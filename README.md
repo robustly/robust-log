@@ -165,6 +165,7 @@ log.removeEventHandler(eventLabelStr)
 
 #### Example
 
+``` javascript
     var log = require('robust-log')()
 
     function sayHi(eventLabelStr, details) { console.log('Hello Passenger!') }
@@ -176,3 +177,18 @@ log.removeEventHandler(eventLabelStr)
 
     // cleanup
     log.removeEventHandler(registrationObj)
+```
+
+## FAQ
+
+### ???
+
+## Advanced Use Cases
+
+### Usage with DevTool
+
+### Report on goal performance numbers with respect to application versions
+
+## Wishlist
+
+- a compressed minified version that only requires the used bits of lodash.

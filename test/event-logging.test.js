@@ -97,4 +97,33 @@ describe('robust-logs', function() {
       expect(function() { log('Circle', circle) }).to.not.throw()
     })
   })
+
+  describe('@goal tracking', ()=>{
+    describe('throw string', function() {
+      it('logs the rootCause error', function() {
+        var goal = log.goal('logTheRootCauseError2')
+        return p.resolve()
+          .then(function() {
+            throw 'ROOT_CAUSE_ERROR_123'
+          })
+          .catch(goal.fail)
+          .catch(function() {
+            expect(captured).to.contain('ROOT_CAUSE_ERROR_123')
+          })
+      })
+    })
+    describe('completes successfully', function() {
+      it('logs the completion', function() {
+        var goal = log.goal('logTheRootCauseError2')
+        return p.resolve('val')
+          .delay(200)
+          .then(goal.pass)
+          .catch(goal.fail)
+          .finally(function() {
+            expect(captured).to.contain('_COMPLETED')
+          })
+      })
+    })
+  })
+
 })
