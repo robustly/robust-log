@@ -10,7 +10,7 @@ describe('robust-logs', function() {
   });
 
   beforeEach(function() {
-    log = ModuleUnderTest()
+    log = ModuleUnderTest('test-app', {ringBufferSize:0})
     captured = ""
   })
 
@@ -22,10 +22,9 @@ describe('robust-logs', function() {
           .then(()=>expect(captured).not.to.contain('should not be logged')))
 
       it('logs if in debug mode.', ()=> {
-        log = ModuleUnderTest({debug:true})
+        log = ModuleUnderTest('test-app',{debug:true,ringBufferSize:0})
         return log.debug('I should be in the logs')
                 .then(()=>expect(captured).to.contain('I should be in the logs'))})
-
     })
     describe('info level', function() {
       it('outputs correctly', function() {
@@ -81,6 +80,11 @@ describe('robust-logs', function() {
         expect(captured).to.contain('at Context.<anonymous>')
       })
     })
+
+    describe('NODE_APP == logSourceId', ()=>{
+      xit('it logs other logSourceIds as trace level')
+      xit('logs to logSourceId as normal')
+    })
   })
 
   describe('handle circular object logging', function() {
@@ -94,5 +98,32 @@ describe('robust-logs', function() {
     })
   })
 
+  describe('@goal tracking', ()=>{
+    describe('throw string', function() {
+      it('logs the rootCause error', function() {
+        var goal = log.goal('logTheRootCauseError2')
+        return p.resolve()
+          .then(function() {
+            throw 'ROOT_CAUSE_ERROR_123'
+          })
+          .catch(goal.fail)
+          .catch(function() {
+            expect(captured).to.contain('ROOT_CAUSE_ERROR_123')
+          })
+      })
+    })
+    describe('completes successfully', function() {
+      it('logs the completion', function() {
+        var goal = log.goal('logTheRootCauseError2')
+        return p.resolve('val')
+          .delay(200)
+          .then(goal.pass)
+          .catch(goal.fail)
+          .finally(function() {
+            expect(captured).to.contain('_COMPLETED')
+          })
+      })
+    })
+  })
 
 })
