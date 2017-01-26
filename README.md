@@ -1,5 +1,8 @@
 # robust-logs
 
+[![Run Status](https://api.shippable.com/projects/588995b5f35d500f0014a472/badge?branch=master)](https://app.shippable.com/projects/588995b5f35d500f0014a472)
+[![Coverage Badge](https://api.shippable.com/projects/588995b5f35d500f0014a472/coverageBadge?branch=master)](https://app.shippable.com/projects/588995b5f35d500f0014a472)
+
 Robust logs is a simple and fast logging module for browser/node.js services.
 
 It uses [bunyan](https://github.com/trentm/node-bunyan)'s data format so it is compatible with
