@@ -68,7 +68,7 @@ Robust logs is not ready for production use.  It is still experimental.
 ### Default Configuration
 
     {
-      ringBufferSize: 100,
+      ringBufferSize: 100, // set to 0 to disable buffer dumps on errors.
       app: 'app_name', // DEFAULTS TO: env.NODE_APP
       env: 'env' // DEFAULTS TO: env.NODE_ENV
     }
@@ -78,7 +78,7 @@ Robust logs is not ready for production use.  It is still experimental.
 .env
 ---
     LOG_LEVEL="INFO"  TODO: check this is implemented...
-    LOG_FILTERS="APP"
+    LOG_FILTERS="APP" TODO: implement
     NODE_APP="Test App"
     NODE_ENV="test"
 
@@ -88,7 +88,7 @@ Robust logs is not ready for production use.  It is still experimental.
 
 #### log(eventLabelStr, [detailsObj], [opts])
 
-  - Logs an event as level: INFO
+  - Logs an INFO_LEVEL event
   - Returns: Promise
   - INFO will always be written to stdout unless filtered out by LOG_FILTERS
 
@@ -96,31 +96,19 @@ Robust logs is not ready for production use.  It is still experimental.
 
     log('something happened', {id:1})
 
-#### log.info(eventLabelStr, [detailsObj])
-
-  - Logs an event as level: INFO
-  - Returns: Promise
-
-##### Example
-
-      log.info('something happened', {id:1})
-
-// TODO: finish these sections...
-
-log.warn(eventLabelStr, [detailsObj])
+#### log.warn(eventLabelStr, [detailsObj])
   - warnings are pretty printed in bold
   - in the future, warning events can trigger alerts
 
-log.trace(eventLabelStr, [detailsObj])
+#### log.trace(eventLabelStr, [detailsObj])
   - trace events are only written to the log stream if process.env.DEBUG is truthy.
   - trace events are also written to the log stream if an error occurs.
 
-log.error(errorLabelStr, errObj)  // only used when there is an unrecovered error.
+#### log.error(errorLabelStr, errObj)  // only used when there is an unrecovered error.
   - if an error is logged, it will also flush the ringbuffer containing all logs from all modules.
   - flushes to stderr as well as stdout
 
-
-log.fatal(eventLabelStr, [detailsObj])  // reserved for only the most grievious of circumstances
+#### log.fatal(eventLabelStr, [detailsObj])  // reserved for only the most grievious of circumstances
   - fatal errors are styled uniquely
   - in the future, fatal events can trigger alerts
 
@@ -151,11 +139,11 @@ that you add goal tracking to your public APIs.
 ``` javascript
   function getItem(req, res) {
     // create a goal instance and a goal log.
-    var goal = log.goal('API_getItem', {req:req})
+    var goal = log.goal('Get Item', {req:req})
 
     get(req).
       .then(item=> {
-        res.status(200).send(item)
+        res.send(item)
         // note that the goal was a success
         return goal.succeed(item)
       })
@@ -163,6 +151,7 @@ that you add goal tracking to your public APIs.
       .catch(goal.fail)
   }
 ```
+TODO: insert screenshot of the output of this goal logging.
 
 ### Event Handling
 
