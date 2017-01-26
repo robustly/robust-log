@@ -137,21 +137,20 @@ that you add goal tracking to your public APIs.
 ##### Example
 
 ``` javascript
-  function getItem(req, res) {
-    // create a goal instance and a goal log.
-    var goal = log.goal('Get Item', {req:req})
+function getItem(req) {
+  // create a goal instance and a goal log.
+  var goal = log.goal('Get Item', {req:req})
 
-    get(req).
-      .then(item=> {
-        res.send(item)
-        // note that the goal was a success
-        return goal.succeed(item)
-      })
-      // if the goal fails, both the failure and the cause will be recorded in the logs.
-      .catch(goal.fail)
-  }
+  get(req)
+    .then(()=>goal.info('getting item...'))
+    .then(goal.succeed)
+    // if the goal fails, both the failure and the cause will be recorded in the logs.
+    .catch(goal.fail)
+}
+
+getItem({id: 1})
 ```
-TODO: insert screenshot of the output of this goal logging.
+![Console Output](assets/goal-logging.png)
 
 ### Event Handling
 
