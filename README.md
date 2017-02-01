@@ -1,14 +1,20 @@
-# robust-logs
+# robust-log
 
 [![Run Status](https://api.shippable.com/projects/588995b5f35d500f0014a472/badge?branch=master)](https://app.shippable.com/projects/588995b5f35d500f0014a472)
 [![Coverage Badge](https://api.shippable.com/projects/588995b5f35d500f0014a472/coverageBadge?branch=master)](https://app.shippable.com/projects/588995b5f35d500f0014a472)
 
 Robust logs is a simple and fast logging module for browser/node.js services.
 
-It uses [bunyan](https://github.com/trentm/node-bunyan)'s data format so it is compatible with
-bunyan log viewer. ![bunyan CLI screenshot](https://raw.github.com/trentm/node-bunyan/master/tools/screenshot1.png)
+``` javascript
+  var log = require('robust-log')('App_Name')
 
-It has an improved logging API and more advanced features than other loggers.
+  log('Hello, I am a simple log message.')
+```
+
+It uses [bunyan](https://github.com/trentm/node-bunyan)'s data format so it is compatible with
+bunyan log viewer and a number of other utilities you can check out here: [bunyan-tools](https://github.com/trentm/node-bunyan/wiki/Awesome-Bunyan)
+
+Robust-Log performs better in some cases, and has a better logging API with support for more advanced features than standard Bunyan.
 
 ## Table of Contents
 
@@ -17,23 +23,22 @@ It has an improved logging API and more advanced features than other loggers.
 - [Current Status](#current-status)
 - [Installation](#installation)
 - [Features](#features)
-- [Setup](#setup)
+- [Examples](#examples)
 - [API](#api)
-- [Versioning](#versioning)
-- [License](#license)
-- [See Also](#see-also)
+- [FAQ](#faq)
 
 <!-- tocstop -->
 
 ## Current Status
 
-Robust logs is not ready for production use.  It is still experimental.
+Robust-Logs is being used in a number of production environments in node backend services.
+Browser support is coming soon.
 
 ## Installation
 
 `npm i robust-logs`
 
-*Optional*
+*Optional Log Viewer For Development*
 
 `npm i -g bunyan` -- command line log viewer
 
@@ -41,101 +46,96 @@ Robust logs is not ready for production use.  It is still experimental.
 
 - Standard interface for logging management.  
 - Extensible via stream plugins
-- Ringbuffer support for additional details when exceptions occur.
+- Buffers low log levels to help keep logs small.
+- Dumps buffered trace reports when an error is logged
 - Supports multiple runtime environments: browser, node.js
 - Tracks success rates and performance history. (via goal tracking.)
 - Supports multiple report formats (JSON, CSV, etc...)
 - Supports large scale deployments
 
-## Usage Examples
+## Examples
 
+### Basic Usage
 
 ``` javascript
-  // logging from the main executable
-  var log = require('robust-log')('Test App')
+  var log = require('robust-log')('App_Name')
 
   log('Hello, welcome to the logging example.')
 
-  log('I saw your future and here is what I learned:',
-    {deathDate: '09/13/2019', painScore: 98, cause: 'car accident'})
+  log.trace('Low level logging that I only want to see when errors occur.',
+    {data: 'some data'})
 
-  log.warn('I just detected that the internal temperature is rising!')
+  log.warn('I just detected that the internal temperature is rising!', {core: 'x7'})
 
-  // log.error('An unexpected error just occurred.', new Error('Module Overheated.'))
-
+  log.error('An unexpected error just occurred.', new Error('Module Overheated.'))
 ```
+
+*Output With Bunyan Log Viewer*
+
+node examples/usage.js | bunyan
 
 ![Console Output](assets/usage-example-1.png)
 
+*Raw Output*
 
-### Default Configuration
+node examples/usage.js
 
-    {
-      ringBufferSize: 100, // set to 0 to disable buffer dumps on errors.
-      app: 'app_name', // DEFAULTS TO: env.NODE_APP
-      env: 'env' // DEFAULTS TO: env.NODE_ENV
-    }
-
-## Supported Environment Variables
-
-.env
----
-    LOG_LEVEL="INFO"  TODO: check this is implemented...
-    LOG_FILTERS="APP" TODO: implement
-    NODE_APP="Test App"
-    NODE_ENV="test"
 
 ## API
+
+Be aware that Robust-Log makes use of the following environment variables:
+
+    LOG_FILTERS="Submodule_name"   # use this if you'd like to enable stdout logging for a submodule.
+    NODE_APP="App_Name"  # This should match require('robust-log')('App_Name')
+    NODE_ENV="test"  # The environment will always be logged along with messages.
+
+All logging apis return a promise which would indicate that the message has been flushed
+to all streams registered.  
 
 ### Logging an event
 
 #### log(eventLabelStr, [detailsObj], [opts])
 
-  - Logs an INFO_LEVEL event
+  - Log Level: INFO (30)
   - Returns: Promise
-  - INFO will always be written to stdout unless filtered out by LOG_FILTERS
 
 ##### Example
 
-    log('something happened', {id:1})
+    log('something happened', {more_details:1})
 
-#### log.warn(eventLabelStr, [detailsObj])
-  - warnings are pretty printed in bold
-  - in the future, warning events can trigger alerts
+#### log.warn(eventLabelStr, [detailsObj], [opts])
 
-#### log.trace(eventLabelStr, [detailsObj])
-  - trace events are only written to the log stream if process.env.DEBUG is truthy.
-  - trace events are also written to the log stream if an error occurs.
+  - Log Level: WARN (40)
 
-#### log.error(errorLabelStr, errObj)  // only used when there is an unrecovered error.
-  - if an error is logged, it will also flush the ringbuffer containing all logs from all modules.
-  - flushes to stderr as well as stdout
+#### log.trace(eventLabelStr, [detailsObj], [opts])
 
-#### log.fatal(eventLabelStr, [detailsObj])  // reserved for only the most grievious of circumstances
-  - fatal errors are styled uniquely
-  - in the future, fatal events can trigger alerts
+  - Log Level: INFO (10)
+  - Returns: Promise
+  - Trace is the lowest priority log level.
+  - By default: trace events are buffered and only written to the log stream if an error occurs.
 
-- All event logging returns a Promise
+#### log.error(errorLabelStr, errObj, [opts])
 
-### Create a goal
+  - Log Level: ERROR (50)
+  - Returns: Promise
+  - If an error is logged, it will also flush the ringbuffer (by default)
+  - Writes to stderr as well as stdout
+  - Recommended: Only use log.error when an unrecoverable error has occurred.  If an exception can
+  be handled or ignored use log()
+
+#### log.fatal(eventLabelStr, [detailsObj])
+
+  - Log Level: ERROR (60)
+  - Returns: Promise
+  - Performs the same functions as error.  
+  - Recommended: only use log.fatal when your application cannot recover from an error and loss of service occurs.
+
+
+### Goal Tracking
 
 Goal tracking is useful to track performance and success rates for end-to-end services
 and internal workflows when debugging.  If you are new to logging goals, it is recommended
-that you add goal tracking to your public APIs.  
-
-#### log.goal(goalLabelStr, contextObj, opts):log
-
-  - logs goal started event with a unique id and start timestamp
-  - Returns: new instance of log with context set to the new goal
-
-#### goal.fail([ErrorObj]) : function<Promise>
-
-  - logs that a goal has failed and logs the error as a reason.
-  - Returns: resolved Promise
-
-#### goal.succeed([ResolvedValue]) : function<Promise>
-
-  - logs that a goal has succeeded
+that you only goal track your public APIs.
 
 ##### Example
 
@@ -154,6 +154,20 @@ function getItem(req) {
 getItem({id: 1})
 ```
 ![Console Output](assets/goal-logging.png)
+
+#### log.goal(goalLabelStr, contextObj, opts):log
+
+  - logs goal started event with a unique id and start timestamp
+  - Returns: new instance of log with context set to the new goal
+
+#### goal.fail([ErrorObj]) : function<Promise>
+
+  - logs that a goal has failed and logs the error as a reason.
+  - Returns: resolved Promise
+
+#### goal.succeed([ResolvedValue]) : function<Promise>
+
+  - logs that a goal has succeeded
 
 ### Event Handling
 
@@ -183,7 +197,6 @@ log.removeEventHandler(eventLabelStr)
 
 ## FAQ
 
-### ???
 
 ## Advanced Use Cases
 
