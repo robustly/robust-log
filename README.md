@@ -3,12 +3,12 @@
 [![Run Status](https://api.shippable.com/projects/588995b5f35d500f0014a472/badge?branch=master)](https://app.shippable.com/projects/588995b5f35d500f0014a472)
 [![Coverage Badge](https://api.shippable.com/projects/588995b5f35d500f0014a472/coverageBadge?branch=master)](https://app.shippable.com/projects/588995b5f35d500f0014a472)
 
-Robust logs is a simple and fast logging module for browser/node.js services.
+Robust-logs is a full-featured fast logging module for browser and node apps.
 
 It uses [bunyan](https://github.com/trentm/node-bunyan)'s data format so it is compatible with
 bunyan log viewer. ![bunyan CLI screenshot](https://raw.github.com/trentm/node-bunyan/master/tools/screenshot1.png)
 
-It has an improved logging API and more advanced features than other loggers.
+Robust-logs use a standard logging API and more advanced features than other loggers.
 
 ## Table of Contents
 
