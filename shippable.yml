@@ -33,5 +33,5 @@ build:
     - $MOD_LOC/mocha --recursive "$TESTS_LOC_DIR/**/*.test.js" -R mocha-junit-reporter --reporter-options mochaFile=$TEST_RESULTS_DIR/testresults.xml -r "$TESTS_LOC_DIR/config.js" --timeout 30000
     - $MOD_LOC/istanbul --include-all-sources cover -root "$SHIPPABLE_REPO_DIR/routes" $SHIPPABLE_REPO_DIR/node_modules/mocha/bin/_mocha -- -R spec-xunit-file --recursive "$TESTS_LOC_DIR/**/*.test.js" -r "$TESTS_LOC_DIR/config.js"
     - $MOD_LOC/istanbul report cobertura --dir $CODE_COVERAGE_DIR
-    - [ $BRANCH == "master" ] && npm run semantic-release
+    - $BRANCH == "master" && npm run semantic-release
     - popd
