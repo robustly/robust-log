@@ -1,11 +1,10 @@
-// logging from the main executable
-var log = require('../')('Test App')
+var log = require('..')('App_Name')
 
 log('Hello, welcome to the logging example.')
 
-log('I saw your future and here is what I learned:',
-  {deathDate: '09/13/2019', painScore: 98, cause: 'car accident'})
+log.trace('Low level logging that I only want to see when errors occur.',
+  {data: 'some data'})
 
-log.warn('I just detected that the internal temperature is rising!')
+log.warn('I just detected that the internal temperature is rising!', {core: 'x7'})
 
-// log.error('An unexpected error just occurred.', new Error('Module Overheated.'))
+log.error('An unexpected error just occurred.', new Error('Module Overheated.'))
