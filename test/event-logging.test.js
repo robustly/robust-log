@@ -10,6 +10,7 @@ describe('robust-logs', function() {
   });
 
   beforeEach(function() {
+    process.env.NODE_APP='test-app'
     log = ModuleUnderTest('test-app', {ringBufferSize:0})
     captured = ""
   })
@@ -81,9 +82,41 @@ describe('robust-logs', function() {
       })
     })
 
-    describe('NODE_APP == logSourceId', ()=>{
-      xit('it logs other logSourceIds as trace level')
-      xit('logs to logSourceId as normal')
+    describe('NODE_APP != logSourceId', ()=>{
+      beforeEach(()=>{
+        process.env.NODE_APP='notapp'
+        log = ModuleUnderTest('test-app', {ringBufferSize:0})
+      })
+      it('it logs as component mode.   (trace level)', () =>
+        log('component-mode')
+          .then(()=> expect(captured).not.to.contain('component-mode'))
+      )
+    })
+
+    describe('NODE_APP != logSourceId but config.trace is set.', ()=>{
+      beforeEach(()=>{
+        process.env.NODE_APP='notapp'
+        log = ModuleUnderTest('test-app', {ringBufferSize:0, trace: true})
+      })
+      it('it logs as component mode.   (trace level)', () =>
+        log('trace-mode')
+          .then(()=> {
+            expect(captured).to.contain('trace-mode')
+            expect(captured).to.contain('"level":10')
+          })
+      )
+    })
+
+    describe('NODE_APP != logSourceId && LOG_FILTERS enabled', ()=>{
+      beforeEach(()=>{
+        process.env.NODE_APP='test-app'
+        process.env.LOG_FILTERS='sher,notapp'
+        log = ModuleUnderTest('notapp', {ringBufferSize:0})
+      })
+      it('it logs as component mode.   (trace level)', () =>
+        log('log-filters')
+          .then(()=> expect(captured).to.contain('log-filters'))
+      )
     })
   })
 
