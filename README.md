@@ -45,13 +45,13 @@ Browser support is coming soon.
 ## Features
 
 - Standard interface for logging management.  
-- Extensible via stream plugins
+- Extensible via stream plugins.
 - Buffers low log levels to help keep logs small.
-- Dumps buffered trace reports when an error is logged
-- Supports multiple runtime environments: browser, node.js
+- Supports all javascript environments.  (Browser, Node.js)
 - Tracks success rates and performance history. (via goal tracking.)
-- Supports multiple report formats (JSON, CSV, etc...)
-- Supports large scale deployments
+- Multiple report formats. (JSON, CSV, etc...)
+- Dumps buffered trace reports when an error is logged.
+- Supports large scale deployments.
 
 ## Examples
 
@@ -72,14 +72,32 @@ Browser support is coming soon.
 
 *Output With Bunyan Log Viewer*
 
-node examples/usage.js | bunyan
+`node examples/usage.js | bunyan`
 
 ![Console Output](assets/usage-example-1.png)
 
 *Raw Output*
 
-node examples/usage.js
+`node examples/usage.js`
 
+```
+{"name":"lib:App_Name","hostname":"Andersons-MacBook-Pro.local","pid":22581,"level":30,"msg":"Hello, welcome to the logging example.","time":"2017-02-01T18:15:07.402Z","v":0}
+{"name":"lib:App_Name","hostname":"Andersons-MacBook-Pro.local","pid":22581,"level":40,"d":{"core":"x7"},"src":{"file":"/Users/Auto/Robustly.io/robust-log/examples/usage.js","line":8},"msg":"I just detected that the internal temperature is rising!","time":"2017-02-01T18:15:07.405Z","v":0}
+
+
+== BEGIN RINGBUFFER DUMP ==
+
+
+{"name":"lib:App_Name","hostname":"Andersons-MacBook-Pro.local","pid":22581,"level":30,"msg":"Hello, welcome to the logging example.","time":"2017-02-01T18:15:07.402Z","v":0}
+{"name":"lib:App_Name","hostname":"Andersons-MacBook-Pro.local","pid":22581,"level":30,"d":{"data":"some data"},"msg":"Low level logging that I only want to see when errors occur.","time":"2017-02-01T18:15:07.404Z","v":0}
+{"name":"lib:App_Name","hostname":"Andersons-MacBook-Pro.local","pid":22581,"level":30,"d":{"core":"x7"},"src":{"file":"/Users/Auto/Robustly.io/robust-log/examples/usage.js","line":8},"msg":"I just detected that the internal temperature is rising!","time":"2017-02-01T18:15:07.405Z","v":0}
+
+
+== END RINGBUFFER DUMP ==
+
+
+{"name":"lib:App_Name","hostname":"Andersons-MacBook-Pro.local","pid":22581,"level":50,"err":{"message":"Module Overheated.","name":"Error","stack":"Error: Module Overheated.\n    at Object.<anonymous> (/Users/Auto/Robustly.io/robust-log/examples/usage.js:10:49)\n    at Module._compile (module.js:570:32)\n    at Object.Module._extensions..js (module.js:579:10)\n    at Module.load (module.js:487:32)\n    at tryModuleLoad (module.js:446:12)\n    at Function.Module._load (module.js:438:3)\n    at Module.runMain (module.js:604:10)\n    at run (bootstrap_node.js:394:7)\n    at startup (bootstrap_node.js:149:9)\n    at bootstrap_node.js:509:3"},"src":{"file":"/Users/Auto/Robustly.io/robust-log/examples/usage.js","line":10},"msg":"An unexpected error just occurred.","time":"2017-02-01T18:15:07.406Z","v":0}
+```
 
 ## API
 
