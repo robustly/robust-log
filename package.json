@@ -1,6 +1,6 @@
 {
-  "name": "robust-logs",
-  "version": "1.0.0",
+  "name": "robust-log",
+  "version": "0.0.0-development",
   "description": "Robust logs is a system logging library designed to aide debugging and increase code readability.",
   "main": "lib/index.js",
   "directories": {
@@ -9,11 +9,12 @@
   },
   "scripts": {
     "test": "make test",
-    "init": "rm -rf node_modules && npm i"
+    "init": "rm -rf node_modules && npm i",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/robustly/robust-logs.git"
+    "url": "https://github.com/robustly/robust-log.git"
   },
   "keywords": [
     "logging",
@@ -30,9 +31,9 @@
   "author": "Robustly.io Inc. <developers@robustly.io>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/robustly/robust-logs/issues"
+    "url": "https://github.com/robustly/robust-log/issues"
   },
-  "homepage": "https://github.com/robustly/robust-logs#readme",
+  "homepage": "https://github.com/robustly/robust-log#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
@@ -44,7 +45,8 @@
     "sinon-chai": "^2.8.0",
     "istanbul": "^0.4.5",
     "mocha-junit-reporter": "^1.13.0",
-    "spec-xunit-file": "0.0.1-3"
+    "spec-xunit-file": "0.0.1-3",
+    "semantic-release": "^6.3.2"
   },
   "dependencies": {
     "bluebird": "3.4.7",

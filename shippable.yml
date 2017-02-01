@@ -14,10 +14,12 @@ node_js:
 # full list http://docs.shippable.com/ci/advancedOptions/environmentVariables/
 env:
   global:
+    - CI=true
     - TEST_RESULTS_DIR=$SHIPPABLE_REPO_DIR/shippable/testresults
     - CODE_COVERAGE_DIR=$SHIPPABLE_REPO_DIR/shippable/codecoverage
     - TESTS_LOC_DIR=$SHIPPABLE_REPO_DIR/test
     - MOD_LOC=$SHIPPABLE_REPO_DIR/node_modules/.bin/
+    - secure: gdlsJ3Fw9exygsR0YWfSAlwE4WPk+2lIsJHpMUJBfEwQnNySBi9raMaDq0hjqpm3TzdzWPwi1FEYghFj376qaJ9U79Tw5qbRwKd3V8qwWgD86rdORNJu8ear5Sx5sOMqtkqrIrpDJm7MTYjjgfZlwBRRsCFOSgBIheuevSsCrP0U6PAUi/Ea72qsCnogTthbB4jc5/Zpx60/xOUIIEpFLkhDTwaRuwi/GreH74rAkuDWFm13Mz69+6oN9UmtlSB3f2vK1tuvMH6+mXu7tBI7EBONht/Tnd7eTkA2ZNTUSlNEklBa3qQVUTzlxMHmP3+lvY6hVjYs06VDhW2yVGWVMA==
 
 build:
 
@@ -31,4 +33,5 @@ build:
     - $MOD_LOC/mocha --recursive "$TESTS_LOC_DIR/**/*.test.js" -R mocha-junit-reporter --reporter-options mochaFile=$TEST_RESULTS_DIR/testresults.xml -r "$TESTS_LOC_DIR/config.js" --timeout 30000
     - $MOD_LOC/istanbul --include-all-sources cover -root "$SHIPPABLE_REPO_DIR/routes" $SHIPPABLE_REPO_DIR/node_modules/mocha/bin/_mocha -- -R spec-xunit-file --recursive "$TESTS_LOC_DIR/**/*.test.js" -r "$TESTS_LOC_DIR/config.js"
     - $MOD_LOC/istanbul report cobertura --dir $CODE_COVERAGE_DIR
+    - [[ $BRANCH == "master" ]] && npm run semantic-release
     - popd
