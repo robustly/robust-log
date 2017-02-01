@@ -14,7 +14,6 @@ node_js:
 # full list http://docs.shippable.com/ci/advancedOptions/environmentVariables/
 env:
   global:
-    - CI=true
     - TEST_RESULTS_DIR=$SHIPPABLE_REPO_DIR/shippable/testresults
     - CODE_COVERAGE_DIR=$SHIPPABLE_REPO_DIR/shippable/codecoverage
     - TESTS_LOC_DIR=$SHIPPABLE_REPO_DIR/test
@@ -34,4 +33,6 @@ build:
     - $MOD_LOC/istanbul --include-all-sources cover -root "$SHIPPABLE_REPO_DIR/routes" $SHIPPABLE_REPO_DIR/node_modules/mocha/bin/_mocha -- -R spec-xunit-file --recursive "$TESTS_LOC_DIR/**/*.test.js" -r "$TESTS_LOC_DIR/config.js"
     - $MOD_LOC/istanbul report cobertura --dir $CODE_COVERAGE_DIR
     - popd
+
+  on_success:
     - if [ "$BRANCH" == "master" ]; then npm run semantic-release; fi
