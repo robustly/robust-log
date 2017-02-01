@@ -14,6 +14,7 @@ node_js:
 # full list http://docs.shippable.com/ci/advancedOptions/environmentVariables/
 env:
   global:
+    - CI=true
     - TEST_RESULTS_DIR=$SHIPPABLE_REPO_DIR/shippable/testresults
     - CODE_COVERAGE_DIR=$SHIPPABLE_REPO_DIR/shippable/codecoverage
     - TESTS_LOC_DIR=$SHIPPABLE_REPO_DIR/test
