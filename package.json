@@ -1,6 +1,6 @@
 {
   "name": "robust-log",
-  "version": "0.0.0-development",
+  "version": "1.0.0-0",
   "description": "Robust logs is a system logging library designed to aide debugging and increase code readability.",
   "main": "lib/index.js",
   "directories": {
