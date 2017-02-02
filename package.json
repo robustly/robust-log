@@ -1,6 +1,6 @@
 {
   "name": "robust-log",
-  "version": "1.0.0-0",
+  "version": "1.0.1-0",
   "description": "A tried tested and true logging library with a simple API and powerful features in addition to pluggable stream support.",
   "main": "lib/index.js",
   "directories": {
