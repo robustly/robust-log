@@ -36,4 +36,3 @@ build:
     - popd
   on_success:
     #- if [ "$BRANCH" == "master" ]; then npm run semantic-release; fi
-    - npm version prepatch && git push origin master --tags && npm publish
