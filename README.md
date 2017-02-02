@@ -36,7 +36,7 @@ Browser support is coming soon.
 
 ## Installation
 
-`npm i robust-logs`
+`npm i robust-log`
 
 *Optional Log Viewer For Development*
 
