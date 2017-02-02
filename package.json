@@ -1,7 +1,7 @@
 {
   "name": "robust-log",
   "version": "1.0.0-0",
-  "description": "Robust logs is a system logging library designed to aide debugging and increase code readability.",
+  "description": "A tried tested and true logging library with a simple API and powerful features in addition to pluggable stream support.",
   "main": "lib/index.js",
   "directories": {
     "example": "examples",
