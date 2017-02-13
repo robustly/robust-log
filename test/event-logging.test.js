@@ -140,7 +140,9 @@ describe('robust-logs', function() {
             throw 'ROOT_CAUSE_ERROR_123'
           })
           .catch(goal.fail)
-          .catch(function() {
+          .then(()=> {throw new Error('should not get here.')})
+          .catch(err => {
+            expect(err).to.equal('ROOT_CAUSE_ERROR_123')
             expect(captured).to.contain('ROOT_CAUSE_ERROR_123')
           })
       })
@@ -153,7 +155,7 @@ describe('robust-logs', function() {
           .then(goal.pass)
           .catch(goal.fail)
           .finally(function() {
-            expect(captured).to.contain('_COMPLETED')
+            expect(captured).to.contain('COMPLETED')
           })
       })
     })

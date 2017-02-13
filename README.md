@@ -220,8 +220,6 @@ log.removeEventHandler(eventLabelStr)
 
 ### Usage with DevTool
 
-### Report on goal performance numbers with respect to application versions
-
 ## Wishlist
 
 - a compressed minified version that only requires the used bits of lodash.
