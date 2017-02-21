@@ -35,4 +35,4 @@ build:
     - $MOD_LOC/istanbul report cobertura --dir $CODE_COVERAGE_DIR
     - popd
   on_success:
-    #- if [ "$BRANCH" == "master" ]; then npm run semantic-release; fi
+    - if [ "$BRANCH" == "master" ]; then npm run publish; fi
