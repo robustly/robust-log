@@ -37,5 +37,6 @@ build:
   on_success:
     - git config credential.helper "store --file=.git/credentials"
     - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+    - echo "I like you."
     # - export TAG_NAME=`git describe --exact-match --tags HEAD
     - if [ "$BRANCH" == "master" -a "$PULL_REQUEST" == "false" ]; then npm run publish; fi
