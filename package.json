@@ -10,7 +10,7 @@
   "scripts": {
     "test": "make test",
     "init": "rm -rf node_modules && npm i",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "publish": "npm version patch && git push origin master --tags && npm publish"
   },
   "repository": {
     "type": "git",
