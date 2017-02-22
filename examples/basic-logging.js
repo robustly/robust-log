@@ -1,4 +1,4 @@
-var log = require('../lib')()
+var log = require('../lib')('elk')
 
 log('starting process 1.')
 
