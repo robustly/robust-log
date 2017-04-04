@@ -10,7 +10,8 @@ describe('robust-logs', function() {
   });
 
   beforeEach(function() {
-    log = ModuleUnderTest()
+    process.env.NODE_APP='test-app'
+    log = ModuleUnderTest('test-app', {ringBufferSize:0})
     captured = ""
   })
 
@@ -22,10 +23,9 @@ describe('robust-logs', function() {
           .then(()=>expect(captured).not.to.contain('should not be logged')))
 
       it('logs if in debug mode.', ()=> {
-        log = ModuleUnderTest({debug:true})
+        log = ModuleUnderTest('test-app',{debug:true,ringBufferSize:0})
         return log.debug('I should be in the logs')
                 .then(()=>expect(captured).to.contain('I should be in the logs'))})
-
     })
     describe('info level', function() {
       it('outputs correctly', function() {
@@ -81,6 +81,43 @@ describe('robust-logs', function() {
         expect(captured).to.contain('at Context.<anonymous>')
       })
     })
+
+    describe('NODE_APP != logSourceId', ()=>{
+      beforeEach(()=>{
+        process.env.NODE_APP='notapp'
+        log = ModuleUnderTest('test-app', {ringBufferSize:0})
+      })
+      it('it logs as component mode.   (trace level)', () =>
+        log('component-mode')
+          .then(()=> expect(captured).not.to.contain('component-mode'))
+      )
+    })
+
+    describe('NODE_APP != logSourceId but config.trace is set.', ()=>{
+      beforeEach(()=>{
+        process.env.NODE_APP='notapp'
+        log = ModuleUnderTest('test-app', {ringBufferSize:0, trace: true})
+      })
+      it('it logs as component mode.   (trace level)', () =>
+        log('trace-mode')
+          .then(()=> {
+            expect(captured).to.contain('trace-mode')
+            expect(captured).to.contain('"level":10')
+          })
+      )
+    })
+
+    describe('NODE_APP != logSourceId && LOG_FILTERS enabled', ()=>{
+      beforeEach(()=>{
+        process.env.NODE_APP='test-app'
+        process.env.LOG_FILTERS='sher,notapp'
+        log = ModuleUnderTest('notapp', {ringBufferSize:0})
+      })
+      it('it logs as component mode.   (trace level)', () =>
+        log('log-filters')
+          .then(()=> expect(captured).to.contain('log-filters'))
+      )
+    })
   })
 
   describe('handle circular object logging', function() {
@@ -94,5 +131,34 @@ describe('robust-logs', function() {
     })
   })
 
+  describe('@goal tracking', ()=>{
+    describe('throw string', function() {
+      it('logs the rootCause error', function() {
+        var goal = log.goal('logTheRootCauseError2')
+        return p.resolve()
+          .then(function() {
+            throw 'ROOT_CAUSE_ERROR_123'
+          })
+          .catch(goal.fail)
+          .then(()=> {throw new Error('should not get here.')})
+          .catch(err => {
+            expect(err).to.equal('ROOT_CAUSE_ERROR_123')
+            expect(captured).to.contain('ROOT_CAUSE_ERROR_123')
+          })
+      })
+    })
+    describe('completes successfully', function() {
+      it('logs the completion', function() {
+        var goal = log.goal('logTheRootCauseError2')
+        return p.resolve('val')
+          .delay(200)
+          .then(goal.pass)
+          .catch(goal.fail)
+          .finally(function() {
+            expect(captured).to.contain('COMPLETED')
+          })
+      })
+    })
+  })
 
 })

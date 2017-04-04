@@ -1,7 +1,7 @@
 {
-  "name": "robust-logs",
-  "version": "1.0.0",
-  "description": "Robust logs is a system logging library designed to aide debugging and increase code readability.",
+  "name": "robust-log",
+  "version": "1.0.48",
+  "description": "A tried tested and true logging library with a simple API, log viewer, and pluggable stream support.",
   "main": "lib/index.js",
   "directories": {
     "example": "examples",
@@ -9,11 +9,12 @@
   },
   "scripts": {
     "test": "make test",
-    "init": "rm -rf node_modules && npm i"
+    "init": "rm -rf node_modules && npm i",
+    "pub": "npm version patch && git push origin master --tags && npm publish"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/robustly/robust-logs.git"
+    "url": "https://github.com/robustly/robust-log.git"
   },
   "keywords": [
     "logging",
@@ -28,11 +29,11 @@
     "simple"
   ],
   "author": "Robustly.io Inc. <developers@robustly.io>",
-  "license": "ISC",
+  "license": "None",
   "bugs": {
-    "url": "https://github.com/robustly/robust-logs/issues"
+    "url": "https://github.com/robustly/robust-log/issues"
   },
-  "homepage": "https://github.com/robustly/robust-logs#readme",
+  "homepage": "https://github.com/robustly/robust-log#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
@@ -41,11 +42,15 @@
     "mocha": "^3.2.0",
     "sinon": "^1.17.7",
     "sinon-as-promised": "^4.0.2",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "istanbul": "^0.4.5",
+    "mocha-junit-reporter": "^1.13.0",
+    "spec-xunit-file": "0.0.1-3",
+    "semantic-release": "^6.3.2"
   },
   "dependencies": {
-    "bluebird": "^3.4.7",
-    "bunyan": "^1.8.5",
-    "lodash": "^4.17.4"
+    "bluebird": "3.4.7",
+    "bunyan": "1.8.5",
+    "lodash": "4.17.4"
   }
 }
